@@ -71,12 +71,15 @@ class DistanceAndMask extends React.Component {
              const scores = await obj[4].array()
  
              // Draw mesh
-             const ctx = canvasRef.current.getContext("2d");
- 
-             // 5. TODO - Update drawing utility
-             // drawSomething(obj, ctx)  
-             console.log(classes[0][0]);
-             drawMask(boxes[0], classes[0], scores[0], 0.8, videoWidth, videoHeight, ctx);
+             if(canvasRef.current){
+
+                 const ctx = canvasRef.current.getContext("2d");
+     
+                 // 5. TODO - Update drawing utility
+                 // drawSomething(obj, ctx)  
+                 console.log(classes[0][0]);
+                 drawMask(boxes[0], classes[0], scores[0], 0.8, videoWidth, videoHeight, ctx);
+             }
  
              tf.dispose(img)
              tf.dispose(resizedImg)
@@ -174,7 +177,7 @@ class DistanceAndMask extends React.Component {
     }
 
     videoConstraints = {
-        height: '580',
+        height: '480',
         width: '900',
         facingMode: 'user'
     }
@@ -198,10 +201,10 @@ class DistanceAndMask extends React.Component {
                                     textAlign: "center",
                                     zindex: 9,
                                     width: 900,
-                                    height: 580,
+                                    height: 480,
                                   }}
                                 audio={false}
-                                height={580}
+                                height={480}
                                 ref={this.state.webcamRef}
                                 width={900}
                                 videoConstraints={this.videoConstraints}
@@ -218,7 +221,7 @@ class DistanceAndMask extends React.Component {
                                     textAlign: "center",
                                     zindex: 8,
                                     width: 900,
-                                    height: 580,
+                                    height: 480,
                                   }}
                             />
                             <FPSStats/>

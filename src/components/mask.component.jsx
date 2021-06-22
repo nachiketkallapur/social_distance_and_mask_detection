@@ -14,15 +14,15 @@ class Mask extends React.Component {
         canvasRef: React.createRef(null)
     }
 
-    detect = async() => {
+    detect = async () => {
         const { webcamRef, canvasRef, net } = this.state;
         // console.log("In detect function");
         // Check data is available
         if (
             typeof webcamRef.current !== "undefined" &&
             webcamRef.current !== null &&
-            webcamRef.current.video.readyState === 4 && 
-            net!=null
+            webcamRef.current.video.readyState === 4 &&
+            net != null
         ) {
             // Get Video Properties
             const video = webcamRef.current.video;
@@ -38,7 +38,7 @@ class Mask extends React.Component {
             canvasRef.current.height = videoHeight;
 
             const img = tf.browser.fromPixels(video);
-            const resizedImg = tf.image.resizeBilinear(img,[640,480]);
+            const resizedImg = tf.image.resizeBilinear(img, [640, 480]);
             const castedImg = resizedImg.cast('int32');
             const expandedImg = castedImg.expandDims(0);
             const obj = await net.executeAsync(expandedImg);
@@ -49,11 +49,13 @@ class Mask extends React.Component {
             const scores = await obj[4].array()
 
             // Draw mesh
-            const ctx = canvasRef.current.getContext("2d");
+            if (canvasRef.current) {
+                const ctx = canvasRef.current.getContext("2d");
+                // 5. TODO - Update drawing utility
+                // drawSomething(obj, ctx)  
+                drawMask(boxes[0], classes[0], scores[0], 0.8, videoWidth, videoHeight, ctx);
+            }
 
-            // 5. TODO - Update drawing utility
-            // drawSomething(obj, ctx)  
-            drawMask(boxes[0], classes[0], scores[0], 0.8, videoWidth, videoHeight, ctx);
 
             tf.dispose(img)
             tf.dispose(resizedImg)
@@ -76,6 +78,12 @@ class Mask extends React.Component {
         }, 200)
     }
 
+    videoConstraints = {
+        height: '480',
+        width: '900',
+        facingMode: 'user'
+    }
+
     render() {
         if (!this.state.net) {
             return <h1>Loading....</h1>
@@ -83,11 +91,14 @@ class Mask extends React.Component {
 
         return (
             <>
-                <br />
-                <h1>Mask Component</h1>
+                <h1>Mask Monitoring Dashboard</h1>
                 <Webcam
+                    audio={false}
+                    height={480}
                     ref={this.state.webcamRef}
-                    muted={true}
+                    width={900}
+                    videoConstraints={this.videoConstraints}
+                    screenshotFormat='image/jpeg'
                     style={{
                         position: "absolute",
                         marginLeft: "auto",
@@ -96,7 +107,7 @@ class Mask extends React.Component {
                         right: 0,
                         textAlign: "center",
                         zindex: 8,
-                        width: 640,
+                        width: 900,
                         height: 480,
                     }}
                 />
@@ -111,11 +122,12 @@ class Mask extends React.Component {
                         right: 0,
                         textAlign: "center",
                         zindex: 9,
-                        width: 640,
+                        width: 900,
                         height: 480,
                     }}
                 />
-                <FPSStats />
+                <br/>
+                <FPSStats style={{ position: "relative", left: "80%", top: "10%", height: "100px", width: "100px" }} />
             </>
         )
     }

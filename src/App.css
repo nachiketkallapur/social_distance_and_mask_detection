@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+a {
+  text-decoration: none;
+}
+
+.app-container {
+  position: absolute;
+  width:100%;
+  height: 100%;
+  background-image: url('./assets/img1.jpg');
+  /* background-image: url('../../images/game14.jpg'); */
+
+}

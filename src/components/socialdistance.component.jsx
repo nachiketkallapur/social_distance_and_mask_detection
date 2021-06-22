@@ -3,6 +3,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import { drawPerson } from '../utilities';
 import Webcam from 'react-webcam';
+import FPSStats from 'react-fps-stats';
 
 class SocialDistance extends React.Component {
 
@@ -110,7 +111,7 @@ class SocialDistance extends React.Component {
     }
 
     videoConstraints = {
-        height: '580',
+        height: '480',
         width: '900',
         facingMode: 'user'
     }
@@ -134,10 +135,10 @@ class SocialDistance extends React.Component {
                                     textAlign: "center",
                                     zindex: 9,
                                     width: 900,
-                                    height: 580,
+                                    height: 480,
                                   }}
                                 audio={false}
-                                height={580}
+                                height={480}
                                 ref={this.state.webcamRef}
                                 width={900}
                                 videoConstraints={this.videoConstraints}
@@ -154,9 +155,10 @@ class SocialDistance extends React.Component {
                                     textAlign: "center",
                                     zindex: 8,
                                     width: 900,
-                                    height: 580,
+                                    height: 480,
                                   }}
                             />
+                            <FPSStats />
                         </>
                     )
                 }
