@@ -1,10 +1,10 @@
 import React from 'react';
+import FPSStats from 'react-fps-stats';
 
 const HomePage = () => {
     return (
-        <div>
-            <h1>Welcome to Social Distance Monitoring Dashboard</h1>
-            <h1>HOME PAGE</h1>
+        <div style={{margin:"0 auto",textAlign:"center"}}>
+            <h1>Welcome to Social Distance and Mask monitoring dashboard</h1>
         </div>
     )
 }

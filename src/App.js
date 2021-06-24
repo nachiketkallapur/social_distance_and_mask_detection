@@ -8,6 +8,7 @@ import DistanceAndMask from './components/distanceandmask.component';
 import Navbar from './components/navbar.component';
 import img1 from './assets/img1.jpg'
 import './App.css'
+import Settings  from './components/settings.component';
 
 class App extends React.Component {
 
@@ -20,6 +21,7 @@ class App extends React.Component {
         <Route exact path='/socialdistance' component={SocialDistance} /> 
         <Route exact path='/mask' component={Mask} /> 
         <Route exact path='/distanceandmask' component={DistanceAndMask} /> 
+        <Route exact path='/settings' component={Settings} /> 
       </Switch>
       </div>
     )

@@ -57,16 +57,16 @@ class SocialDistance extends React.Component {
             net.detect(video)
                 .then(tempobj => {
                     // Sort out only person class
-                    var obj=[];
-                    for(let i=0;i<tempobj.length;i++){
-                        if(tempobj[i].class==="person") {
+                    var obj = [];
+                    for (let i = 0; i < tempobj.length; i++) {
+                        if (tempobj[i].class === "person") {
                             obj.push(tempobj[i]);
                         }
                     }
                     if (obj && obj.length > 0) {
 
                         for (let i = 0; i < obj.length; i++) {
-                            if(obj[i].class!=="person") continue;
+                            if (obj[i].class !== "person") continue;
                             var bbox = obj[i].bbox;
                             let x = bbox[0];
                             let y = bbox[1];
@@ -104,7 +104,7 @@ class SocialDistance extends React.Component {
 
                     }
 
-                    this.setState({numberOfPeople:person.length, dangers:danger.size})
+                    this.setState({ numberOfPeople: person.length, dangers: danger.size })
 
                 })
         }
@@ -119,7 +119,7 @@ class SocialDistance extends React.Component {
     render() {
         // console.log("In render method");
         return (
-            <div style={{ alignContent: "center", justifyContent: "center" }}>
+            <div style={{ position: "relative", alignContent: "center", justifyContent: "center", margin:"0 auto",textAlign:"center" }}>
                 <h1>Social Distance Component</h1>
                 <h3>Number of people = {this.state.numberOfPeople} , Dangers = {this.state.dangers}</h3>
                 {
@@ -136,7 +136,7 @@ class SocialDistance extends React.Component {
                                     zindex: 9,
                                     width: 900,
                                     height: 480,
-                                  }}
+                                }}
                                 audio={false}
                                 height={480}
                                 ref={this.state.webcamRef}
@@ -156,9 +156,9 @@ class SocialDistance extends React.Component {
                                     zindex: 8,
                                     width: 900,
                                     height: 480,
-                                  }}
+                                }}
                             />
-                            <FPSStats />
+                            <FPSStats top="10%" left="95%" />
                         </>
                     )
                 }

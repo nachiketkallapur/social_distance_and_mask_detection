@@ -33,6 +33,7 @@ function Navbar(props) {
           <Typography style={{cursor:"pointer"}} variant="h6" className={classes.title} onClick={() => props.history.push('/')}>
             Distance_n_Mask
           </Typography>
+          <Button color="inherit" onClick={()=>props.history.push('/settings')}>Settings</Button>
           <Button color="inherit" onClick={()=>props.history.push('/mask')}>Mask Monitoring</Button>
           <Button color="inherit" onClick={()=>props.history.push('/socialdistance')}>Social Distance Monitoring</Button>
           <Button color="inherit" onClick={()=>props.history.push('/distanceandmask')}>Social Distance and Mask Monitoring</Button>

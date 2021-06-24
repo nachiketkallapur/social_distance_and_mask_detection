@@ -127,7 +127,7 @@ class Mask extends React.Component {
                     }}
                 />
                 <br/>
-                <FPSStats style={{ position: "relative", left: "80%", top: "10%", height: "100px", width: "100px" }} />
+                <FPSStats top="10%" left="95%" />
             </>
         )
     }

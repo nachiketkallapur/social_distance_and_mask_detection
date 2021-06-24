@@ -1,7 +1,7 @@
 import React from 'react';
 import * as tf from "@tensorflow/tfjs";
 import * as cocossd from "@tensorflow-models/coco-ssd";
-import { drawPerson,drawMask } from '../utilities';
+import { drawPerson, drawMask } from '../utilities';
 import Webcam from 'react-webcam';
 import FPSStats from 'react-fps-stats';
 
@@ -9,7 +9,7 @@ class DistanceAndMask extends React.Component {
 
     state = {
         ssdmodel: null,
-        maskmodel:null,
+        maskmodel: null,
         maskModelUrl: 'https://masktfjs.s3.us-east.cloud-object-storage.appdomain.cloud/model.json',
         webcamRef: React.createRef(null),
         canvasRef: React.createRef(null),
@@ -17,16 +17,16 @@ class DistanceAndMask extends React.Component {
         numberofPeopleInDanger: null,
         withMask: null,
         withoutMask: null,
-        maskWearedIncorrect:null
+        maskWearedIncorrect: null
     }
 
     async componentDidMount() {
         const ssdmodel = await cocossd.load();
         const maskmodel = await tf.loadGraphModel(this.state.maskModelUrl);
         console.log("Mask and SSD models loaded");
-        this.setState({ ssdmodel,maskmodel });
+        this.setState({ ssdmodel, maskmodel });
 
-        setInterval(()=>{
+        setInterval(() => {
             this.detectMask();
         }, 200);
 
@@ -35,15 +35,15 @@ class DistanceAndMask extends React.Component {
         }, 200);
     }
 
-    detectMask = async() => {
-        const { webcamRef, canvasRef,maskmodel } = this.state;
+    detectMask = async () => {
+        const { webcamRef, canvasRef, maskmodel } = this.state;
 
         // Check data is available
         if (
             typeof webcamRef.current !== "undefined" &&
             webcamRef.current !== null &&
             webcamRef.current.video.readyState === 4 &&
-            maskmodel !=null
+            maskmodel != null
         ) {
             // Get Video Properties
             const video = webcamRef.current.video;
@@ -57,48 +57,48 @@ class DistanceAndMask extends React.Component {
             // Set canvas height and width
             canvasRef.current.width = videoWidth;
             canvasRef.current.height = videoHeight;
-            
-             // Make mask detections
-             const img = tf.browser.fromPixels(video);
-             const resizedImg = tf.image.resizeBilinear(img,[900,580]);
-             const castedImg = resizedImg.cast('int32');
-             const expandedImg = castedImg.expandDims(0);
-             const obj = await maskmodel.executeAsync(expandedImg);
-             // const obj = await net.executeAsync(expanded)
-             // // console.log(await obj[4].array());
-             const boxes = await obj[6].array()
-             const classes = await obj[3].array()
-             const scores = await obj[4].array()
- 
-             // Draw mesh
-             if(canvasRef.current){
 
-                 const ctx = canvasRef.current.getContext("2d");
-     
-                 // 5. TODO - Update drawing utility
-                 // drawSomething(obj, ctx)  
-                 console.log(classes[0][0]);
-                 drawMask(boxes[0], classes[0], scores[0], 0.8, videoWidth, videoHeight, ctx);
-             }
- 
-             tf.dispose(img)
-             tf.dispose(resizedImg)
-             tf.dispose(castedImg)
-             tf.dispose(expandedImg)
-             tf.dispose(obj)
+            // Make mask detections
+            const img = tf.browser.fromPixels(video);
+            const resizedImg = tf.image.resizeBilinear(img, [900, 580]);
+            const castedImg = resizedImg.cast('int32');
+            const expandedImg = castedImg.expandDims(0);
+            const obj = await maskmodel.executeAsync(expandedImg);
+            // const obj = await net.executeAsync(expanded)
+            // // console.log(await obj[4].array());
+            const boxes = await obj[6].array()
+            const classes = await obj[3].array()
+            const scores = await obj[4].array()
+
+            // Draw mesh
+            if (canvasRef.current) {
+
+                const ctx = canvasRef.current.getContext("2d");
+
+                // 5. TODO - Update drawing utility
+                // drawSomething(obj, ctx)  
+                console.log(classes[0][0]);
+                drawMask(boxes[0], classes[0], scores[0], 0.8, videoWidth, videoHeight, ctx);
+            }
+
+            tf.dispose(img)
+            tf.dispose(resizedImg)
+            tf.dispose(castedImg)
+            tf.dispose(expandedImg)
+            tf.dispose(obj)
+        }
     }
-}
 
     detectPerson = () => {
-        const { webcamRef, canvasRef, ssdmodel,maskmodel } = this.state;
+        const { webcamRef, canvasRef, ssdmodel, maskmodel } = this.state;
 
         // Check data is available
         if (
             typeof webcamRef.current !== "undefined" &&
             webcamRef.current !== null &&
             webcamRef.current.video.readyState === 4 &&
-            ssdmodel !=null &&
-            maskmodel !=null
+            ssdmodel != null &&
+            maskmodel != null
         ) {
             // Get Video Properties
             const video = webcamRef.current.video;
@@ -120,9 +120,9 @@ class DistanceAndMask extends React.Component {
             ssdmodel.detect(video)
                 .then(tempobj => {
                     // Sort out for person class
-                    var obj=[];
-                    for(let i=0;i<tempobj.length;i++){
-                        if(tempobj[i].class==="person") {
+                    var obj = [];
+                    for (let i = 0; i < tempobj.length; i++) {
+                        if (tempobj[i].class === "person") {
                             obj.push(tempobj[i]);
                         }
                     }
@@ -166,11 +166,11 @@ class DistanceAndMask extends React.Component {
 
                     }
 
-                    this.setState({numberOfPeople:person.length, numberofPeopleInDanger:danger.size})
+                    this.setState({ numberOfPeople: person.length, numberofPeopleInDanger: danger.size })
 
                 })
-            
-           
+
+
 
 
         }
@@ -183,11 +183,12 @@ class DistanceAndMask extends React.Component {
     }
 
     render() {
-        // console.log("In render method");
+        console.log(this.state);
         return (
-            <div style={{ alignContent: "center", justifyContent: "center" }}>
-                <h1>Social Distance and Mask Component</h1>
-                <h3>Number of people = {this.state.numberOfPeople} , Danger = {this.state.numberofPeopleInDanger}</h3>
+            <div style={{ position: "relative", alignItems: "center", justifyContent: "center", margin: "0 auto", textAlign: "center" }}>
+                <h1>Social Distance and Mask Monitoring</h1>
+                <h3>Number of people = {this.state.numberOfPeople}</h3>
+                <h3>Danger = {this.state.numberofPeopleInDanger}</h3>
                 {
                     this.state.ssdmodel && (
                         <>
@@ -202,7 +203,7 @@ class DistanceAndMask extends React.Component {
                                     zindex: 9,
                                     width: 900,
                                     height: 480,
-                                  }}
+                                }}
                                 audio={false}
                                 height={480}
                                 ref={this.state.webcamRef}
@@ -222,9 +223,9 @@ class DistanceAndMask extends React.Component {
                                     zindex: 8,
                                     width: 900,
                                     height: 480,
-                                  }}
+                                }}
                             />
-                            <FPSStats/>
+                            <FPSStats top="10%" left="95%" />
                         </>
                     )
                 }
