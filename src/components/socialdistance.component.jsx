@@ -4,6 +4,8 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import { drawPerson } from '../utilities';
 import Webcam from 'react-webcam';
 import FPSStats from 'react-fps-stats';
+import img1 from '../assets/img1.jpg'
+import { Button } from '@material-ui/core'
 
 class SocialDistance extends React.Component {
 
@@ -12,7 +14,42 @@ class SocialDistance extends React.Component {
         webcamRef: React.createRef(null),
         canvasRef: React.createRef(null),
         numberOfPeople: 0,
-        dangers: 0
+        dangers: 0,
+        settings: JSON.parse(localStorage.getItem("settings"))
+    }
+
+    sendAlertEmail = () => {
+        const { settings } = this.state;
+        console.log(settings.lastAlertEmailSent);
+        if (this.state.numberOfPeople <= this.state.settings.threshold) {
+            alert("Observed capacity is less than or equal to allowedCapacity");
+            return;
+        }
+
+        //3,00,000 milliseconds = 5 minutes
+        if (settings.lastAlertEmailSent && (new Date().getTime() - parseInt(settings.lastAlertEmailSent) < 300000) && this.state.settings.autoEmail === false) {
+            alert("Last alert email was sent less than just 5 minutes ago\nNext email can be sent at " + new Date(settings.lastAlertEmailSent + 300000));
+            return;
+        }
+
+        fetch('http://localhost:8080/alert/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...settings, allowedCapacity: settings.threshold, observedCapacity: this.state.numberOfPeople,time: new Date().getTime() })
+        })
+            .then(res => res.json())
+            .then(({ err, message }) => {
+                if (err === true) {
+                    alert("Error in sending alert email");
+                } else {
+                    alert(message);
+                    settings["lastAlertEmailSent"] = new Date().getTime();
+                    localStorage.removeItem("settings");
+                    console.log(settings);
+                    localStorage.setItem("settings", JSON.stringify(settings));
+                    this.setState({ settings: JSON.parse(localStorage.getItem("settings")) })
+                }
+            })
     }
 
     async componentDidMount() {
@@ -103,7 +140,9 @@ class SocialDistance extends React.Component {
                         drawPerson(obj, danger, ctx);
 
                     }
-
+                    if (this.numberOfPeople > this.state.settings.threshold) {
+                        this.sendAlertEmail();
+                    }
                     this.setState({ numberOfPeople: person.length, dangers: danger.size })
 
                 })
@@ -116,54 +155,75 @@ class SocialDistance extends React.Component {
         facingMode: 'user'
     }
 
+
     render() {
-        // console.log("In render method");
+        // console.log(new Date(1624976488937));
+        if (!this.state.net) {
+            return <h1>Loading...</h1>
+        }
         return (
-            <div style={{ position: "relative", alignContent: "center", justifyContent: "center", margin:"0 auto",textAlign:"center" }}>
+            <div style={{
+                position: "absolute",
+                width: "100%",
+                height: "91vh",
+                alignContent: "center",
+                justifyContent: "center",
+                margin: "0 auto",
+                textAlign: "center",
+                backgroundImage: `url(${img1})`
+            }}>
                 <h1>Social Distance Component</h1>
                 <h3>Number of people = {this.state.numberOfPeople} , Dangers = {this.state.dangers}</h3>
+                <Webcam
+                    style={{
+                        position: "absolute",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                        left: 0,
+                        right: 0,
+                        textAlign: "center",
+                        zindex: 9,
+                        width: 900,
+                        height: 480,
+                    }}
+                    audio={false}
+                    height={480}
+                    ref={this.state.webcamRef}
+                    width={900}
+                    videoConstraints={this.videoConstraints}
+                    screenshotFormat='image/jpeg'
+                />
+                <canvas
+                    ref={this.state.canvasRef}
+                    style={{
+                        position: "absolute",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                        left: 0,
+                        right: 0,
+                        textAlign: "center",
+                        zindex: 8,
+                        width: 900,
+                        height: 480,
+                    }}
+                />
+                <FPSStats top="10%" left="95%" />
                 {
-                    this.state.net && (
-                        <>
-                            <Webcam
-                                style={{
-                                    position: "absolute",
-                                    marginLeft: "auto",
-                                    marginRight: "auto",
-                                    left: 0,
-                                    right: 0,
-                                    textAlign: "center",
-                                    zindex: 9,
-                                    width: 900,
-                                    height: 480,
-                                }}
-                                audio={false}
-                                height={480}
-                                ref={this.state.webcamRef}
-                                width={900}
-                                videoConstraints={this.videoConstraints}
-                                screenshotFormat='image/jpeg'
-                            />
-                            <canvas
-                                ref={this.state.canvasRef}
-                                style={{
-                                    position: "absolute",
-                                    marginLeft: "auto",
-                                    marginRight: "auto",
-                                    left: 0,
-                                    right: 0,
-                                    textAlign: "center",
-                                    zindex: 8,
-                                    width: 900,
-                                    height: 480,
-                                }}
-                            />
-                            <FPSStats top="10%" left="95%" />
-                        </>
-                    )
+                    this.state.settings.autoEmail === false &&
+                    <Button variant="contained" color="primary" 
+                    style={{
+                        position: "relative",
+                        left: "40%",
+                        top: "0%",
+                        cursor:"pointer"
+                    }}
+                        onClick={this.sendAlertEmail}
+                    >
+                        Send Alert! Email
+                    </Button>
                 }
 
-            </div>
+            </div >
         )
     }
 }

@@ -12,6 +12,33 @@ import Settings  from './components/settings.component';
 
 class App extends React.Component {
 
+  componentDidMount(){
+    console.log("In component did mount");
+    if(localStorage.getItem("settings")){
+      var settings = JSON.parse(localStorage.getItem("settings"));
+
+    } else {
+      var settings={
+        message:"SOP violation occured in the below location",
+        subject:"Distance_N_Mask emal ALERT!!",
+        location:"Davanagere, Karnataka",
+        toEmail:"nachiketkallapur@gmail.com",
+        threshold:10,
+        autoEmail:false,
+        lastAlertEmailSent:null
+      }
+    }
+
+    navigator.geolocation.getCurrentPosition(({coords: {latitude, longitude}})=>{
+      settings["latitude"]=latitude;
+      settings["longitude"]=longitude;
+      localStorage.removeItem("settings");
+      localStorage.setItem('settings',JSON.stringify(settings));
+      // console.log(latitude,longitude)
+    })
+
+  }
+
   render(){
     return (
       <div className='app-container'>

@@ -42,10 +42,10 @@ a {
 }
 
 .app-container {
-  position: absolute;
+  position: relative;
   width:100%;
   height: 100%;
-  background-image: url('./assets/img1.jpg');
+  
   /* background-image: url('../../images/game14.jpg'); */
 
 }

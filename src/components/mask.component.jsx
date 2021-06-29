@@ -4,6 +4,7 @@ import { nextFrame } from "@tensorflow/tfjs";
 import Webcam from 'react-webcam';
 import FPSStats from "react-fps-stats";
 import { drawMask } from '../utilities';
+import img1 from '../assets/img1.jpg';
 
 class Mask extends React.Component {
 
@@ -56,7 +57,6 @@ class Mask extends React.Component {
                 drawMask(boxes[0], classes[0], scores[0], 0.8, videoWidth, videoHeight, ctx);
             }
 
-
             tf.dispose(img)
             tf.dispose(resizedImg)
             tf.dispose(castedImg)
@@ -90,7 +90,16 @@ class Mask extends React.Component {
         }
 
         return (
-            <>
+            <div style={{
+                position: "absolute",
+                width:"100%",
+                height:"91vh",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto",
+                textAlign: "center",
+                backgroundImage : `url(${img1})`
+            }}>
                 <h1>Mask Monitoring Dashboard</h1>
                 <Webcam
                     audio={false}
@@ -128,7 +137,7 @@ class Mask extends React.Component {
                 />
                 <br/>
                 <FPSStats top="10%" left="95%" />
-            </>
+            </div>
         )
     }
 }
