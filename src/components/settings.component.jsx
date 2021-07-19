@@ -57,13 +57,13 @@ const Settings = () => {
     return (
         <div style={{
             position: "absolute",
-            width:"100%",
-            height:"auto",
+            width: "100%",
+            height: "auto",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto",
             textAlign: "center",
-            backgroundImage:`url(${img1})`
+            backgroundImage: `url(${img1})`
         }}>
             <h1>Set the Settings for the ALERT email to be sent</h1>
             <form onSubmit={handleSubmit} autoComplete="off">
@@ -75,7 +75,7 @@ const Settings = () => {
                     defaultValue={subject}
                     variant="filled"
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <TextField
                     required
@@ -85,7 +85,7 @@ const Settings = () => {
                     defaultValue={message}
                     variant="filled"
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <TextField
                     required
@@ -97,7 +97,7 @@ const Settings = () => {
                     type="number"
                     InputProps={{ inputProps: { min: 0 } }}
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <TextField
                     required
@@ -108,7 +108,7 @@ const Settings = () => {
                     variant="filled"
                     type="email"
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <TextField
                     disabled
@@ -116,31 +116,17 @@ const Settings = () => {
                     id="filled-required"
                     label="Last alert Email Sent"
                     name="lastAlertEmailSent"
-                    defaultValue={lastAlertEmailSent}
+                    defaultValue={new Date(parseInt(lastAlertEmailSent))}
                     variant="filled"
                     type="email"
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <FormControl component="fieldset">
-                    <FormLabel component="legend">Send auto emails</FormLabel>
-                    <RadioGroup
-                        aria-label="userType"
-                        name="autoEmail"
-                        // label="Send Auto Email"
-                        value={autoEmail}
-                        onChange={handleChange}
-                    >
-                        <FormControlLabel
-                            value={true}
-                            control={<Radio />}
-                            label="Yes"
-                        />
-                        <FormControlLabel
-                            value={false}
-                            control={<Radio />}
-                            label="No"
-                        />
+                    <FormLabel component="legend">Send Auto Emails</FormLabel>
+                    <RadioGroup aria-label="autoEmail" name="autoEmail" value={autoEmail} onChange={handleChange}>
+                        <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                        <FormControlLabel value="false" control={<Radio />} label="No" />
                     </RadioGroup>
                 </FormControl><br />
                 <TextField
@@ -151,7 +137,7 @@ const Settings = () => {
                     defaultValue={location}
                     variant="filled"
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <TextField
                     disabled
@@ -162,7 +148,7 @@ const Settings = () => {
                     defaultValue={latitude}
                     variant="filled"
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <TextField
                     disabled
@@ -173,7 +159,7 @@ const Settings = () => {
                     defaultValue={longitude}
                     variant="filled"
                     onChange={handleChange}
-                    style={{ width: "400px", margin: "5px 0px" }}
+                    style={{ width: "470px", margin: "5px 0px" }}
                 /><br />
                 <Button variant="contained" color="primary" type="submit">Set</Button>
                 <br />

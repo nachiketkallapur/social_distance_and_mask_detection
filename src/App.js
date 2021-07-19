@@ -39,6 +39,10 @@ class App extends React.Component {
 
   }
 
+  // componentWillUnmount(){
+  //   localStorage.removeItem("settings");
+  // }
+
   render(){
     return (
       <div className='app-container'>

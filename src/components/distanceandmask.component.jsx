@@ -20,21 +20,24 @@ class DistanceAndMask extends React.Component {
         withMask: null,
         withoutMask: null,
         maskWearedIncorrect: null,
-        settings:JSON.parse(localStorage.getItem("settings"))
+        settings:JSON.parse(localStorage.getItem("settings")),
+        lastAutoEmailSent:null
     }
 
     sendAlertEmail = () => {
         const { settings } = this.state;
         console.log(settings.lastAlertEmailSent);
-        if (this.state.numberOfPeople <= this.state.settings.threshold) {
-            alert("Observed capacity is less than or equal to allowedCapacity");
-            return;
-        }
+        // if (this.state.numberOfPeople <= this.state.settings.threshold) {
+        //     alert("Observed capacity is less than or equal to allowedCapacity");
+        //     return;
+        // }
 
         //3,00,000 milliseconds = 5 minutes
-        if (settings.lastAlertEmailSent && (new Date().getTime() - parseInt(settings.lastAlertEmailSent) < 300000) && this.state.settings.autoEmail === false) {
-            alert("Last alert email was sent less than just 5 minutes ago\nNext email can be sent at " + new Date(settings.lastAlertEmailSent + 300000));
-            return;
+        if (settings.lastAlertEmailSent && (new Date().getTime() - settings.lastAlertEmailSent < 300000)) {
+            if(this.state.settings.autoEmail === "false"){
+                alert("Last alert email was sent less than just 5 minutes ago\nNext email can be sent at " + new Date(settings.lastAlertEmailSent + 300000));
+                return;
+            } else return;
         }
 
         fetch('http://localhost:8080/alert/', {
@@ -203,6 +206,12 @@ class DistanceAndMask extends React.Component {
 
                     }
 
+                    if (this.state.settings.autoEmail==="true" && this.state.numberOfPeople > this.state.settings.threshold && (new Date().getTime() - this.state.settings.lastAlertEmailSent) > 300000
+                        && (!this.state.lastAutoEmailSent || (new Date().getTime() - this.state.lastAutoEmailSent) > 5000)) {
+                        console.log("Sending auto email alert");
+                        this.sendAlertEmail();
+                        this.setState({ lastAutoEmailSent: new Date().getTime() })
+                    }
                     this.setState({ numberOfPeople: person.length, numberofPeopleInDanger: danger.size })
 
                 })
@@ -275,7 +284,7 @@ class DistanceAndMask extends React.Component {
                 />
                 <FPSStats top="10%" left="95%" />
                 {
-                    this.state.settings.autoEmail === false &&
+                    this.state.settings.autoEmail === "false" &&
                     <Button variant="contained" color="primary" style={{
                         position: "relative",
                         left: "40%",
